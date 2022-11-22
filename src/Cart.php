@@ -816,8 +816,8 @@ class Cart
     private function createCartItem($id, $name, $qty, $price, $weight, array $options)
     {
         if ($id instanceof Buyable) {
-            $cartItem = CartItem::fromBuyable($id, $qty ?: []);
-            $cartItem->setQuantity($name ?: 1);
+            $cartItem = CartItem::fromBuyable($id, $options ?: []);
+            $cartItem->setQuantity($qty ?: 1);
             $cartItem->associate($id);
         } elseif (is_array($id)) {
             $cartItem = CartItem::fromArray($id);
