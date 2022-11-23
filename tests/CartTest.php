@@ -1254,6 +1254,32 @@ class CartTest extends TestCase
     }
 
     /** @test */
+    public function cart_can_create_items_from_models_using_the_canbebought_trait_and_loose_model()
+    {
+        $cart = $this->getCartDiscount(0.5);
+
+        $model = new BuyableProductTrait([
+            'name' => 'First item',
+        ]);
+
+        $cart->add($model, 3);
+
+        unset($model);
+
+        $cartItem = $cart->get('027c91341fd5cf4d2579b49c4b6a90da');
+
+        $cart->setTax('027c91341fd5cf4d2579b49c4b6a90da', 0.19);
+
+        $cart->setDiscount('027c91341fd5cf4d2579b49c4b6a90da', Money::USD(10));
+
+        $this->assertEquals(new Money(1000, new Currency('USD')), $cartItem->price);
+        $this->assertEquals(new Money(2990, new Currency('USD')), $cartItem->discount());
+        $this->assertEquals(new Money(10, new Currency('USD')), $cartItem->subtotal());
+        $this->assertEquals(new Money(2, new Currency('USD')), $cartItem->tax());
+        $this->assertEquals(new Money(12, new Currency('USD')), $cartItem->total());
+    }
+
+    /** @test */
     public function it_does_allow_adding_cart_items_with_weight_and_options()
     {
         // https://github.com/bumbummen99/LaravelShoppingcart/pull/5
