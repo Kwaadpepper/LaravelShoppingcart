@@ -1136,6 +1136,20 @@ class CartTest extends TestCase
     }
 
     /** @test */
+    public function can_set_cart_item_discount_using_money()
+    {
+        $cart = $this->getCart();
+        $cart->add(new BuyableProduct([
+            'name' => 'First item',
+        ]), 1);
+        $cartItem = $cart->get('027c91341fd5cf4d2579b49c4b6a90da');
+
+        $cart->setDiscount('027c91341fd5cf4d2579b49c4b6a90da', Money::USD(230));
+
+        $this->assertTrue(Money::USD(230)->equals($cartItem->discount));
+    }
+
+    /** @test */
     public function can_set_cart_item_weight_and_calculate_total_weight()
     {
         $cart = $this->getCart();
