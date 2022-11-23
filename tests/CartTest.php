@@ -1122,7 +1122,7 @@ class CartTest extends TestCase
     }
 
     /** @test */
-    public function can_set_cart_item_discount()
+    public function can_set_cart_discount()
     {
         $cart = $this->getCart();
         $cart->add(new BuyableProduct([
@@ -1136,7 +1136,7 @@ class CartTest extends TestCase
     }
 
     /** @test */
-    public function can_set_cart_item_discount_using_money()
+    public function can_set_cart_discount_using_money()
     {
         $cart = $this->getCart();
         $cart->add(new BuyableProduct([
@@ -1146,7 +1146,49 @@ class CartTest extends TestCase
 
         $cart->setDiscount('027c91341fd5cf4d2579b49c4b6a90da', Money::USD(230));
 
-        $this->assertTrue(Money::USD(230)->equals($cartItem->discount));
+        $this->assertEquals(Money::USD(230), $cartItem->discount);
+    }
+
+    /** @test */
+    public function can_set_cart_item_discount()
+    {
+        $cart = $this->getCart();
+        $cart->add(new BuyableProduct([
+            'name' => 'First item',
+        ]), 1);
+        $cartItem = $cart->get('027c91341fd5cf4d2579b49c4b6a90da');
+
+        $cartItem->setDiscount(0.6);
+
+        $this->assertEquals(0.6, $cartItem->discount);
+    }
+
+    /** @test */
+    public function can_set_cart_item_discount_using_money()
+    {
+        $cart = $this->getCart();
+        $cart->add(new BuyableProduct([
+            'name' => 'First item',
+        ]), 1);
+        $cartItem = $cart->get('027c91341fd5cf4d2579b49c4b6a90da');
+
+        $cartItem->setDiscount(Money::USD(250));
+
+        $this->assertEquals(Money::USD(250), $cartItem->discount);
+    }
+
+    /** @test */
+    public function cart_item_can_calculate_discount_using_money()
+    {
+        $cart = $this->getCart();
+        $cart->add(new BuyableProduct([
+            'name' => 'First item',
+        ]), 1);
+        $cartItem = $cart->get('027c91341fd5cf4d2579b49c4b6a90da');
+
+        $cart->setDiscount('027c91341fd5cf4d2579b49c4b6a90da', Money::USD(300));
+
+        $this->assertEquals(Money::USD(700), $cartItem->discount());
     }
 
     /** @test */
